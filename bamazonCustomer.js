@@ -29,5 +29,31 @@ function list() {
         };
         console.log(table.toString());
 
-    })
+        buy();
+
+    });
+    
+};
+
+function buy() {
+    inquirer.prompt({
+        name: "id",
+        type: "input",
+        message: "What is the ID of the item you would like to purchase? [Quit with Q]"
+    }).then(function(answer) {
+        if (answer.id === "q") {
+            console.log("Good-Bye!");
+            connection.end();
+        }
+        if (answer.id === NaN) {
+            console.log("Please Enter ID number you would like to purchase");
+            return;
+        } 
+        // else {
+
+        // }
+    });
+
+
+
 };
