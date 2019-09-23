@@ -32,7 +32,7 @@ function list() {
         {
         name: "id",
         type: "input",
-        message: "What is the ID of the item you would like to purchase? [Quit with Q]",
+        message: "What is the ID of the item you would like to purchase?",
         validate: function(value) {
             if (isNaN(value) === false) {
                 return true;
@@ -44,7 +44,7 @@ function list() {
         {
             name: "units",
             type: "input",
-            message: "How many would you like to purchase?[Q for Quit]",
+            message: "How many would you like to purchase?",
             validate: function(value) {
                 if (isNaN(value) === false) {   
                  return true;
@@ -56,7 +56,7 @@ function list() {
             var arrNum = parseInt(answer.id - 1);
             var product = answer.id;
             var quantity = parseInt(answer.units);
-            var totalPrice = parseFloat((res[arrNum].price * quantity));
+            var totalPrice = parseFloat((res[arrNum].price * quantity).toFixed(2));
 
             if (quantity > res[arrNum].stock_quantity) {
                 console.log("Sorry! We do not have enough item in our stock. Please check our stock_quantity again!");
