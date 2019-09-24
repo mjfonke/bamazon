@@ -50,7 +50,6 @@ function viewSales() {
     connection.query(query, function(err,res) {
         if(err) throw err;
 
-        
         var table = new Table({
             head: ["DEPT_ID", "DEPT_NAME", "OVER_HEAD_COST", "PRODUCT_SALES", "TOTAL_PROFIT"]
         });
