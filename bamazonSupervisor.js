@@ -1,4 +1,4 @@
-var msql = require("mysql");
+var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
 
@@ -22,7 +22,8 @@ function choice() {
         message: "What would you like to do?",
         choices: [
             "View Product Sales by Department",
-            "Create New Department"
+            "Create New Department",
+            "Quit"
         ]
     }).then(function(answer) {
         switch (answer.pick) {
@@ -40,29 +41,36 @@ function choice() {
 };
 
 function viewSales() {
-    var query = "select departments.department_id, departments.department_name, departments.over_head_costs, product.product_sales"
-    query += " from product"
-    query += "right join departments on departments.department_name = product.item_id"
+    var query = "select department_id, departments.department_name, over_head_costs, sum(product_sales) as product_sales, sum(product_sales) - over_head_costs as total_profit"
+    query += " from departments"
+    query += " inner join product"
+    query += " on departments.department_name = product.department_name"
+    query += " group by department_id"
 
     connection.query(query, function(err,res) {
         if(err) throw err;
 
+        
         var table = new Table({
-            head: ["DEPT_ID", "DEPT_NAME", "OVER_HEAD_COST", "PRODUCT_SALES", "TOTAL PROFIT"]
+            head: ["DEPT_ID", "DEPT_NAME", "OVER_HEAD_COST", "PRODUCT_SALES", "TOTAL_PROFIT"]
         });
 
         for (var i =0; i <res.length; i++) {
+
             table.push(
-                [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sale
-            )
-        }
+                [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, res[i].total_profit]
+            );
+        };
+        console.log(table.toString());
+
+        choice();
     })
 };
 
 function createNew() {
     inquirer.prompt([
         {
-            name: "name",
+            name: "dept",
             type: "input",
             message: "What is the name of the department you would like to add?"
         },
@@ -79,12 +87,16 @@ function createNew() {
         }
     ]).then(function(answer) {
         var query = "INSERT INTO departments SET ?";
-        connection.query(query, {department_name: answer.name, over_head_costs: answer.overhead},
-            function(err,res) {
+        connection.query(query, {department_name: answer.dept, over_head_costs: answer.overhead}, function(err,res) {
                 if(err) throw err;
                 console.log("New Department is added!");
 
                 choice();
             });
     })
+};
+
+function quit() {
+    console.log("Good - Bye !");
+    connection.end();
 }
