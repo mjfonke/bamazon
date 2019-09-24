@@ -59,19 +59,27 @@ function list() {
             var totalPrice = parseFloat((res[arrNum].price * quantity).toFixed(2));
 
             if (quantity > res[arrNum].stock_quantity) {
-                console.log("Sorry! We do not have enough item in our stock. Please check our stock_quantity again!");
+                console.log("\nSorry! We do not have enough item in our stock. Please check our stock_quantity again!\n");
                 prompt();
             }
 
-            else {var query = "UPDATE product set ? where ?";
+            else {
+            var query = "UPDATE product set ? where ?";
             connection.query(query, [{stock_quantity: (res[arrNum].stock_quantity - quantity)}, {item_id: product}], function(err, res) {
                 
                 if(err) throw err;
-            console.log("Your total price is $" + totalPrice + ". Thank you for your purchase!")
-
-            prompt();
             
+                console.log("\nYour total price is $" + totalPrice + ". Thank you for your purchase!\n");
+            
+                prompt();
             });
+
+            var qry = "UPDATE product set ? where ?";
+            connection.query(qry, [{product_sales: (res[arrNum].product_sales + totalPrice)}, {item_id: product}], function(err,res) {
+                if(err) throw err;
+                
+            });
+
             }
     });
 
