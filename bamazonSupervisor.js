@@ -41,9 +41,9 @@ function choice() {
 };
 
 function viewSales() {
-    var query = "select department_id, departments.department_name, over_head_costs, sum(product_sales) as product_sales, sum(product_sales) - over_head_costs as total_profit"
+    var query = "select department_id, departments.department_name, over_head_costs, sum(product_sales) as product_sales"
     query += " from departments"
-    query += " inner join product"
+    query += " left join product"
     query += " on departments.department_name = product.department_name"
     query += " group by department_id"
 
@@ -57,7 +57,7 @@ function viewSales() {
         for (var i =0; i <res.length; i++) {
 
             table.push(
-                [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, res[i].total_profit]
+                [res[i].department_id, res[i].department_name, res[i].over_head_costs, res[i].product_sales, (res[i].product_sales - res[i].over_head_costs)]
             );
         };
         console.log(table.toString());
